@@ -87,6 +87,9 @@ jobs:
           path: artifacts/
         continue-on-error: true
 
+      - name: List artifacts
+        run: ls -la artifacts/
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
