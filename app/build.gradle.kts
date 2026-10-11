@@ -113,8 +113,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
-    // JGit for Git operations
-    implementation("org.eclipse.jgit:org.eclipse.jgit:6.6.0")
+    // JGit for Git operations - using simple shell commands instead
 
     // GitHub API
     implementation(libs.retrofit)
@@ -132,11 +131,9 @@ dependencies {
     // Coil for images
     implementation(libs.coil.compose)
 
-    // Markdown rendering (using markdown-view instead)
-    implementation("io.github.rosemoe:markdown-view:1.0.2")
+    // Markdown rendering - using simple markdown parser
 
-    // Code editor (using simple editor)
-    implementation("io.github.rosemoe:editor:1.4.2")
+    // Code editor - using simple text view
 
     // Biometric auth
     implementation("androidx.biometric:biometric:1.1.0")
