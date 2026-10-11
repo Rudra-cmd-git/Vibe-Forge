@@ -1,0 +1,88 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Local configuration
+local.properties
+*.properties
+!gradle.properties
+!**/build.gradle.kts
+!**/settings.gradle.kts
+!**/gradle/libs.versions.toml
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.so
+*.o
+
+# Kotlin
+*.class
+*.jar
+
+# Build outputs
+captures/
+*.hprof
+
+# Keystore
+keystore/
+*.keystore
+*.jks
+
+# Runtime (PRoot)
+rootfs/
+home/
+
+# Test outputs
+test-results/
+coverage/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Gradle cache
+.gradle/
+build/
+
+# KSP
+ksp/
+
+# Compose
+compose_docs/
+
+# Room
+schemas/
+
+# Proguard
+proguard/
+
+# Android Studio
+.idea/
+*.iml
+
+# Cache
+.caches/

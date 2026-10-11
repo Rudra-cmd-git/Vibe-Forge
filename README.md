@@ -1,75 +1,56 @@
-# VibeForge
+# Vibe Coder
 
-> Vibe code anything, right from your phone.
-
-VibeForge is an Android app where anyone, even people who can't code, can
-describe what they want and watch an AI agent build it on-device. No root,
-no terminal, no setup headaches.
+A premium vibe-coding Android app where anyone can describe what they want and have an AI agent build it on their phone — including very large projects. No root required.
 
 ## Features
-- **One-tap setup:** pick a model, paste your API key, start building
-- **On-device Linux runtime:** Node, Python, git and a full web stack
-  (HTML, CSS, JS, Tailwind, Vite, React) via PRoot
-- **Agent built for big projects:** auto-maintained project memory,
-  task lists and plan-first milestones
-- **Safety net:** git auto-commit after every change, with one-tap undo
-  and a version timeline
-- **Self-healing:** the agent runs your app, reads errors and fixes them
-- **Live preview:** see your app and the chat side by side
-- **Bring your own model:** Anthropic, OpenRouter, DeepSeek or any
-  OpenAI/Anthropic-compatible endpoint
-- **Classy dark UI:** calm, minimal and built for phones
 
-## Download
-Grab the latest APK from [Releases](../../releases):
-- **Online:** small download, fetches runtime bundles on first launch
-- **Offline:** everything bundled, works without a connection (larger)
+- **One-Tap Setup**: Pick a model/provider, paste API key, start building
+- **PRoot Runtime**: Full Alpine Linux with Node, Python, Git, and web stack
+- **AI Agent**: Tools for bash, file ops, search, web fetch with safety checks
+- **Project Memory**: Auto-maintained PROJECT.md and TODO.md
+- **Git Versioning**: Auto-commit, undo, version timeline
+- **Self-Healing**: Agent fixes its own errors
+- **Live Preview**: Draggable bottom sheet with device toggles
+- **Multi-Provider**: Anthropic, OpenRouter, DeepSeek, Custom endpoints
 
-Requires Android 8.0+ and an ARM64 device.
+## Architecture
 
-## Getting started
-1. Install the APK and open the app
-2. Choose a provider and add your API key
-3. Type what you want to build, for example "a portfolio website with a
-   dark theme"
-4. Watch it build, preview it live, and undo anything with one tap
-
-## Build from source
-```bash
-git clone https://github.com/<your-username>/vibeforge.git
-cd vibeforge
-./gradlew assembleDebug
+```
+VibeCoder/
+├── app/                    # Main application module
+├── design-system/          # Theme, components, design tokens
+├── agent/                  # Agent loop, tools, memory
+├── runtime/                # PRoot + Alpine rootfs
+├── providers/              # AI model providers
+├── storage/                # Preferences, Git, file ops
+├── versioning/             # Git-based version timeline
+└── preview/                # Live preview with WebView
 ```
 
-## Project structure
-| Module | Purpose |
-|---|---|
-| `ui` | Compose screens, theme and components |
-| `agent` | Agent loop, tools, project memory |
-| `runtime` | PRoot and rootfs manager |
-| `providers` | Model API integrations |
-| `storage` | Projects, settings, key storage |
-| `versioning` | Git auto-commit, undo timeline |
+## Design System
 
-## Roadmap
-- [ ] Design system and home screen
-- [ ] Runtime setup
-- [ ] Chat and first provider
-- [ ] File tools and bash
-- [ ] Live preview
-- [ ] Undo timeline
-- [ ] Self-healing loop
-- [ ] Templates and Advanced tab
+- **Colors**: Dark-first (#0B0B0F bg), one accent (#8B7CFF)
+- **Typography**: Inter (UI) + JetBrains Mono (code)
+- **Shapes**: 16-20dp radius, pill inputs, 1dp hairline borders
+- **Motion**: Spring animations (200-300ms), shared transitions
 
-## Contributing
-Issues and PRs are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+## Building
 
-## Disclaimer
-AI-generated code can be wrong. Review anything important, and keep
-backups of projects you care about. Your API keys stay on your device.
+```bash
+# Debug build
+./gradlew assembleDebug
+
+# Release build (requires keystore env vars)
+./gradlew assembleRelease
+```
+
+## Requirements
+
+- Android Studio Koala or later
+- JDK 17
+- Android SDK 34
+- Device/emulator with ARM64 (for PRoot)
 
 ## License
-MIT. See [LICENSE](LICENSE).
 
-## Credits
-Inspired by [Mobile-Harness](https://github.com/techjarves/Mobile-Harness).
+MIT
