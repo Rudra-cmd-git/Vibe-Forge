@@ -5,9 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intent.takeOrElse
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.dp
 
 /**
  * Vibe Coder Typography
@@ -15,34 +13,35 @@ import androidx.compose.ui.unit.dp
  * Inter for UI, JetBrains Mono for code only.
  * Clear hierarchy: large light-weight headings, 15-16sp body,
  * muted 13sp secondary text, generous line height.
+ * Uses variable fonts for smaller APK size.
  */
 object VibeTypography {
 
     // ===== FONT FAMILIES =====
-    // These will be loaded from assets/fonts/
-    // For now using system fonts as fallback
+    // Using variable fonts (single file with all weights)
+    // inter_variable.ttf and jetbrains_mono_variable.ttf in res/font/
 
     val InterFontFamily = FontFamily(
-        Font(R.font.inter_thin, FontWeight.Thin),
-        Font(R.font.inter_extralight, FontWeight.ExtraLight),
-        Font(R.font.inter_light, FontWeight.Light),
-        Font(R.font.inter_regular, FontWeight.Normal),
-        Font(R.font.inter_medium, FontWeight.Medium),
-        Font(R.font.inter_semibold, FontWeight.SemiBold),
-        Font(R.font.inter_bold, FontWeight.Bold),
-        Font(R.font.inter_extrabold, FontWeight.ExtraBold),
-        Font(R.font.inter_black, FontWeight.Black)
+        Font(R.font.inter_variable, FontWeight.Thin),
+        Font(R.font.inter_variable, FontWeight.ExtraLight),
+        Font(R.font.inter_variable, FontWeight.Light),
+        Font(R.font.inter_variable, FontWeight.Normal),
+        Font(R.font.inter_variable, FontWeight.Medium),
+        Font(R.font.inter_variable, FontWeight.SemiBold),
+        Font(R.font.inter_variable, FontWeight.Bold),
+        Font(R.font.inter_variable, FontWeight.ExtraBold),
+        Font(R.font.inter_variable, FontWeight.Black)
     )
 
     val JetBrainsMonoFontFamily = FontFamily(
-        Font(R.font.jetbrains_mono_thin, FontWeight.Thin),
-        Font(R.font.jetbrains_mono_extralight, FontWeight.ExtraLight),
-        Font(R.font.jetbrains_mono_light, FontWeight.Light),
-        Font(R.font.jetbrains_mono_regular, FontWeight.Normal),
-        Font(R.font.jetbrains_mono_medium, FontWeight.Medium),
-        Font(R.font.jetbrains_mono_semibold, FontWeight.SemiBold),
-        Font(R.font.jetbrains_mono_bold, FontWeight.Bold),
-        Font(R.font.jetbrains_mono_extrabold, FontWeight.ExtraBold)
+        Font(R.font.jetbrains_mono_variable, FontWeight.Thin),
+        Font(R.font.jetbrains_mono_variable, FontWeight.ExtraLight),
+        Font(R.font.jetbrains_mono_variable, FontWeight.Light),
+        Font(R.font.jetbrains_mono_variable, FontWeight.Normal),
+        Font(R.font.jetbrains_mono_variable, FontWeight.Medium),
+        Font(R.font.jetbrains_mono_variable, FontWeight.SemiBold),
+        Font(R.font.jetbrains_mono_variable, FontWeight.Bold),
+        Font(R.font.jetbrains_mono_variable, FontWeight.ExtraBold)
     )
 
     // Fallback to system fonts if custom fonts not available
