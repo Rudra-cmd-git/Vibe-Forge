@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("kotlinx-serialization")
 }
@@ -76,66 +75,57 @@ android {
 }
 
 dependencies {
-    // Core Android
-    val coreKtx = "1.13.1"
-    val activityCompose = "1.9.0"
-    val lifecycle = "2.7.0"
-
-    implementation("androidx.core:core-ktx:$coreKtx")
-    implementation("androidx.activity:activity-compose:$activityCompose")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle")
+    // Core Android (using version catalog)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Compose
-    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
-    implementation(composeBom)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.compose.runtime:runtime-rxjava3")
+    implementation(libs.compose.bom)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.runtime.livedata)
+    implementation(libs.compose.runtime.rxjava3)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose)
 
     // Hilt DI
-    val hilt = "2.48"
-    implementation("com.google.dagger:hilt-android:$hilt")
-    kapt("com.google.dagger:hilt-compiler:$hilt")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Room Database
-    val room = "2.6.1"
-    implementation("androidx.room:room-runtime:$room")
-    implementation("androidx.room:room-ktx:$room")
-    kapt("androidx.room:room-compiler:$room")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     // DataStore Preferences (Encrypted)
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore.preferences)
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // JGit for Git operations
     implementation("org.eclipse.jgit:org.eclipse.jgit:6.8.0.202403150430-r")
 
     // GitHub API
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx)
+    implementation(libs.okhttp.logging)
+    implementation(libs.okhttp)
 
     // Coroutines & Flow
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(libs.kotlinx.coroutines.android)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // Serialization
-    val serialization = "1.6.3"
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization")
+    implementation(libs.kotlinx.serialization.json)
 
     // Coil for images
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.coil.compose)
 
     // Markdown rendering
     implementation("io.noties.markwon:markwon:4.6.3")
@@ -148,16 +138,15 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
 
     // WorkManager for background tasks
-    val work = "2.9.0"
-    implementation("androidx.work:work-runtime-ktx:$work")
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.11.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation(libs.compose.ui.tooling)
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
