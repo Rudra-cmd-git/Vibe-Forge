@@ -110,7 +110,7 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // JGit for Git operations
-    implementation("org.eclipse.jgit:org.eclipse.jgit:6.8.0.202403150430-r")
+    implementation(libs.jgit)
 
     // GitHub API
     implementation(libs.retrofit)
@@ -129,11 +129,11 @@ dependencies {
     implementation(libs.coil.compose)
 
     // Markdown rendering
-    implementation("io.noties.markwon:markwon:4.6.3")
-    implementation("io.noties.markwon:markwon-recycler:4.6.3")
+    implementation(libs.markwon)
+    implementation(libs.markwon.recycler)
 
     // Code editor
-    implementation("io.github.rosemoe:editor:1.4.4")
+    implementation(libs.rosemoe.editor)
 
     // Biometric auth
     implementation("androidx.biometric:biometric:1.1.0")
