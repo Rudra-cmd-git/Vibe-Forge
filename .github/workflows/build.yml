@@ -33,6 +33,11 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | sdkmanager --licenses || true
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+
       - name: Extract version info
         id: version
         run: |
@@ -52,8 +57,8 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      - name: Build Release APK (unsigned)
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - name: Build Release APK (unsigned, skip if no keystore)
+        run: ./gradlew assembleRelease --no-daemon --stacktrace -PskipSigning=true
         continue-on-error: true
 
       - name: Upload Release APK as artifact
