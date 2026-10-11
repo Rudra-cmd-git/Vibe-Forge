@@ -1,10 +1,6 @@
 package com.vibecoder.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -42,6 +38,7 @@ fun AppNavHost(appViewModel: AppViewModel) {
         ) { backStackEntry ->
             val projectId = backStackEntry.getString()!!
             val chatViewModel: ChatViewModel = hiltViewModel(key = projectId)
+            chatViewModel.initialize(projectId)
             ChatScreen(
                 projectId = projectId,
                 viewModel = chatViewModel,

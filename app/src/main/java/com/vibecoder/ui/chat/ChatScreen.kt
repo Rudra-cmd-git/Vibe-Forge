@@ -77,7 +77,7 @@ fun ChatScreen(
         ) {
             // Top bar
             ChatTopBar(
-                projectName = viewModel.projectName,
+                projectName = viewModel.projectName.collectAsStateWithLifecycle().value ?: projectId,
                 onBack = onBack,
                 onPreviewToggle = { showPreview = !showPreview },
                 onTimelineToggle = { showTimeline = !showTimeline },

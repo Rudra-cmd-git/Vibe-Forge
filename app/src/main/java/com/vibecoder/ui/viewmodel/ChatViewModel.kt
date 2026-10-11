@@ -3,7 +3,15 @@ package com.vibecoder.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vibecoder.agent.Agent
-import com.vibecoder.storage.ChatRepository
+import com.vibecoder.data.repository.ChatRepository
+import com.vibecoder.data.storage.VibeCoderDatabase
+import com.vibecoder.design.components.ChatMessageData
+import com.vibecoder.design.components.ChatRole
+import com.vibecoder.design.components.ConsoleLog
+import com.vibecoder.design.components.DeviceSize
+import com.vibecoder.design.components.ToolAction
+import com.vibecoder.design.components.ToolStatus
+import com.vibecoder.design.components.VersionEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,11 +20,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    val projectId: String,
-    val projectName: String,
     private val repository: ChatRepository,
-    private val agent: Agent
+    private val agent: Agent,
+    private val database: VibeCoderDatabase
 ) : ViewModel() {
+
+    private var projectId: String = ""
 
     // Input state
     private val _inputText = MutableStateFlow("")
@@ -45,6 +54,10 @@ class ChatViewModel @Inject constructor(
     private val _currentVersion = MutableStateFlow(0)
     val currentVersion = _currentVersion.asStateFlow()
 
+    // Project name
+    private val _projectName = MutableStateFlow("")
+    val projectName = _projectName.asStateFlow()
+
     // Preview
     private val _previewUrl = MutableStateFlow("http://localhost:5173")
     val previewUrl = _previewUrl.asStateFlow()
@@ -63,12 +76,15 @@ class ChatViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    init {
+    fun initialize(projectId: String) {
+        this.projectId = projectId
         loadProject()
     }
 
     private fun loadProject() {
         viewModelScope.launch {
+            val project = database.projectDao().getProjectById(projectId).await()
+            _projectName.value = project?.name ?: projectId
             _messages.value = repository.loadMessages(projectId)
             _versions.value = repository.loadVersions(projectId)
             _currentVersion.value = _versions.value.lastIndex
@@ -87,6 +103,11 @@ class ChatViewModel @Inject constructor(
         val userMessage = ChatMessageData(role = ChatRole.User, content = text)
         _messages.value = _messages.value + userMessage
 
+        // Save user message
+        viewModelScope.launch {
+            repository.saveMessage(projectId, userMessage)
+        }
+
         // Run agent
         viewModelScope.launch {
             try {
@@ -101,6 +122,9 @@ class ChatViewModel @Inject constructor(
                 val assistantMessage = ChatMessageData(role = ChatRole.Assistant, content = result.summary)
                 _messages.value = _messages.value + assistantMessage
 
+                // Save assistant message
+                repository.saveMessage(projectId, assistantMessage)
+
                 // Update versions
                 val newVersion = VersionEntry(
                     summary = result.summary,
@@ -113,7 +137,9 @@ class ChatViewModel @Inject constructor(
                 _currentVersion.value = _versions.value.lastIndex
 
             } catch (e: Exception) {
-                _messages.value = _messages.value + ChatMessageData(role = ChatRole.Assistant, content = "Error: ${e.message}")
+                val errorMessage = ChatMessageData(role = ChatRole.Assistant, content = "Error: ${e.message}")
+                _messages.value = _messages.value + errorMessage
+                repository.saveMessage(projectId, errorMessage)
             } finally {
                 _isAgentWorking.value = false
                 _agentStatus.value = null
@@ -147,27 +173,4 @@ class ChatViewModel @Inject constructor(
     fun openInBrowser() { /* TODO: Open in browser */ }
 
     fun toggleConsole() { _showConsole.value = !_showConsole.value }
-}
-
-import com.vibecoder.design.components.ChatMessageData
-import com.vibecoder.design.components.ChatRole
-import com.vibecoder.design.components.DeviceSize
-import com.vibecoder.design.components.ToolAction
-import com.vibecoder.design.components.ToolStatus
-import com.vibecoder.design.components.VersionEntry
-import com.vibecoder.design.components.ConsoleLog
-
-// Placeholder interfaces - to be implemented in agent module
-interface ChatRepository {
-    fun loadMessages(projectId: String): List<ChatMessageData>
-    fun loadVersions(projectId: String): List<VersionEntry>
-}
-
-interface Agent {
-    data class Plan(val steps: List<String>)
-    data class Result(val summary: String, val success: Boolean, val filesChanged: Int, val duration: Long)
-
-    fun createPlan(prompt: String, projectId: String): Plan
-    fun executePlan(plan: Plan, projectId: String): Result
-    fun runTests(projectId: String)
 }

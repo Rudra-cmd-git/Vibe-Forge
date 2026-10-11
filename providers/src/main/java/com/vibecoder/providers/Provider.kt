@@ -123,3 +123,37 @@ data class ProviderMetadata(
     val supportsTools: Boolean,
     val supportsVision: Boolean
 )
+
+/**
+ * Tool schema for LLM function calling (provider version)
+ */
+@Serializable
+data class ToolSchema(
+    val name: String,
+    val description: String,
+    val parameters: ToolParameters
+)
+
+@Serializable
+data class ToolParameters(
+    val type: String = "object",
+    val properties: Map<String, ToolParameter> = emptyMap(),
+    val required: List<String> = emptyList()
+)
+
+@Serializable
+data class ToolParameter(
+    val type: String,
+    val description: String,
+    val enumValues: List<String>? = null
+)
+
+/**
+ * Tool call from LLM (provider version)
+ */
+@Serializable
+data class ToolCall(
+    val id: String,
+    val name: String,
+    val arguments: Map<String, Any>
+)

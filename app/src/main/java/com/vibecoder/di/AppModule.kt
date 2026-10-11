@@ -1,79 +1,146 @@
 package com.vibecoder.di
 
 import android.content.Context
-import com.vibecoder.preview.PreviewManager
-import com.vibecoder.providers.ProviderFactory
-import com.vibecoder.runtime.proot.ProotRuntime
-import com.vibecoder.storage.git.GitRepository
-import com.vibecoder.storage.prefs.PreferencesRepository
-import com.vibecoder.versioning.VersionManager
+import com.vibecoder.data.github.GitHubApiService
+import com.vibecoder.data.github.GitHubRepository
+import com.vibecoder.data.github.GitHubTokenManager
+import com.vibecoder.data.git.GitIgnoreGenerator
+import com.vibecoder.data.git.JGitRepositoryManager
+import com.vibecoder.data.secrets.SecretScanner
+import com.vibecoder.data.storage.Database
+import com.vibecoder.data.storage.PreferencesManager
+import com.vibecoder.agent.AgentExecutor
+import com.vibecoder.agent.AgentConfig
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import okio.Path
-import okio.fs
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
     @Singleton
-    fun providePreferencesRepository(@ApplicationContext context: Context): PreferencesRepository {
-        return PreferencesRepository(context)
+    fun provideOkHttpClient(): OkHttpClient {
+        val logging = HttpLoggingInterceptor()
+        logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
     }
 
     @Provides
     @Singleton
-    fun provideProviderFactory(): ProviderFactory {
-        return ProviderFactory()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
     }
 
     @Provides
     @Singleton
-    fun provideProjectRoot(@ApplicationContext context: Context): Path {
-        return context.filesDir.toPath().resolve("projects")
+    fun provideGitHubApiService(retrofit: Retrofit): GitHubApiService {
+        return retrofit.create(GitHubApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubTokenManager(@ApplicationContext context: Context): GitHubTokenManager {
+        return GitHubTokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideJGitRepositoryManager(): JGitRepositoryManager {
+        return JGitRepositoryManager()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSecretScanner(): SecretScanner {
+        return SecretScanner()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitIgnoreGenerator(): GitIgnoreGenerator {
+        return GitIgnoreGenerator()
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesManager(@ApplicationContext context: Context): PreferencesManager {
+        return PreferencesManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): Database {
+        return Database.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubRepository(
+        apiService: GitHubApiService,
+        tokenManager: GitHubTokenManager,
+        gitManager: JGitRepositoryManager,
+        @ApplicationContext context: Context
+    ): GitHubRepository {
+        return GitHubRepository(apiService, tokenManager, gitManager, context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAgentConfig(preferencesManager: PreferencesManager): AgentConfig {
+        return AgentConfig(
+            model = preferencesManager.agentModel.value,
+            temperature = preferencesManager.agentTemperature.value,
+            maxTokens = preferencesManager.agentMaxTokens.value,
+            enableAutoCommit = preferencesManager.autoCommit.value,
+            enableAutoPush = preferencesManager.autoPush.value
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideAgentExecutor(
+        gitManager: JGitRepositoryManager,
+        secretScanner: SecretScanner,
+        database: Database,
+        config: AgentConfig
+    ): AgentExecutor {
+        return AgentExecutor(gitManager, secretScanner, database, config)
     }
 }
 
+// IO Dispatcher for Hilt
 @Module
-@InstallIn(ApplicationComponent::class)
-object RuntimeModule {
+@InstallIn(SingletonComponent::class)
+object DispatcherModule {
 
     @Provides
     @Singleton
-    fun provideProotRuntime(@ApplicationContext context: Context, projectRoot: Path): ProotRuntime {
-        return ProotRuntime(context, projectRoot)
-    }
-}
-
-@Module
-@InstallIn(ApplicationComponent::class)
-object StorageModule {
+    @dagger.hilt.android.qualifiers.ApplicationContext
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     @Singleton
-    fun provideGitRepository(projectRoot: Path): GitRepository {
-        return GitRepository(projectRoot)
-    }
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
     @Singleton
-    fun provideVersionManager(projectRoot: Path): VersionManager {
-        return VersionManager(projectRoot)
-    }
-}
-
-@Module
-@InstallIn(ApplicationComponent::class)
-object PreviewModule {
-
-    @Provides
-    @Singleton
-    fun providePreviewManager(@ApplicationContext context: Context, projectRoot: Path): PreviewManager {
-        return PreviewManager(context, projectRoot)
-    }
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }
