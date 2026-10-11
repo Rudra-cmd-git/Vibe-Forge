@@ -34,9 +34,6 @@ mockk = "1.13.13"
 truth = "1.1.5"
 okio = "3.9.0"
 kotlinxHtml = "0.8.0"
-jgit = "6.8.0.202403150430-r"
-markwon = "4.6.3"
-rosemoeEditor = "1.4.4"
 
 [libraries]
 # AndroidX
@@ -122,12 +119,6 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
-
-# Additional libraries
-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
-markwon = { module = "io.noties.markwon:markwon", version.ref = "markwon" }
-markwon-recycler = { module = "io.noties.markwon:markwon-recycler", version.ref = "markwon" }
-rosemoe-editor = { module = "io.github.rosemoe:editor", version.ref = "rosemoeEditor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
