@@ -6,6 +6,10 @@ plugins {
     id("kotlin-kapt")
 }
 
+versionCatalogs {
+    libs
+}
+
 android {
     namespace = "com.vibecoder"
     compileSdk = 34
