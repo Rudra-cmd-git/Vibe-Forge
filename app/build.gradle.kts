@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     alias(libs.plugins.kotlin.serialization)
+    id("kotlin-kapt")
 }
 
 android {
@@ -60,15 +61,15 @@ android {
     signingConfigs {
         create("release") {
             val keystorePath = System.getenv("KEYSTORE_PATH") ?: ""
-            val storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            val keyAlias = System.getenv("KEY_ALIAS") ?: ""
-            val keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+            val storePasswordEnv = System.getenv("KEYSTORE_PASSWORD") ?: ""
+            val keyAliasEnv = System.getenv("KEY_ALIAS") ?: ""
+            val keyPasswordEnv = System.getenv("KEY_PASSWORD") ?: ""
             
-            if (keystorePath.isNotBlank() && storePassword.isNotBlank()) {
+            if (keystorePath.isNotBlank() && storePasswordEnv.isNotBlank()) {
                 storeFile = file(keystorePath)
-                storePassword = storePassword
-                keyAlias = keyAlias
-                keyPassword = keyPassword
+                storePassword = storePasswordEnv
+                keyAlias = keyAliasEnv
+                keyPassword = keyPasswordEnv
             }
         }
     }
